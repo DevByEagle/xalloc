@@ -1,6 +1,13 @@
 cmake_minimum_required(VERSION 3.10)
-project(xalloc)
+project(xalloc C)
 
-file(GLOB SOURCES "*.c" "*.cpp")
+set(CMAKE_C_STANDARD 11)
+set(CMAKE_C_STANDARD_REQUIRED TRUE)
 
-add_executable(${PROJECT_NAME} ${SOURCES})
+if (MSVC)
+    add_compile_options(/W4 /WX)
+else()
+    add_compile_options(-Wall -Wextra -Wpedantic -Werror)
+endif()
+
+add_executable(${PROJECT_NAME} main.c xalloc.h)
