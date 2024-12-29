@@ -4,6 +4,8 @@ project(xalloc)
 set(CMAKE_C_STANDARD 11)
 set(CMAKE_C_STANDARD_REQUIRED TRUE)
 
-add_executable(${PROJECT_NAME} main.c)
+file(GLOB SOURCES "*.c" "*.cpp")
+
+add_executable(${PROJECT_NAME} ${SOURCES})
 
 target_compile_options(${PROJECT_NAME} PRIVATE -Wall -Wextra -Wpedantic)
