@@ -4,17 +4,15 @@
 
 ## Example
 
-> [!NOTE]
-> 
-> Do Not use the other function in xalloc besides `xalloc`, `xrealloc` and `xfree`. 
-
 ```c
+#include <stdio.h>
 #include "xalloc.h"
 
 int main() {
     int* arr = (int*)xalloc(10 * sizeof(int));
     if (arr == NULL) {
-        // Handle allocation failure
+        fprintf(stderr, "Memory allocation failed.\n");
+        return 1;
     }
 
     // Use the memory...
