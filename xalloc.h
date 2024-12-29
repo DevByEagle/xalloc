@@ -7,6 +7,7 @@
 #define ALIGNMENT 16
 #define MEMORY_SIZE 1024 * 1024 // 1 MB memory pool size
 
+// Block structure for free list
 typedef struct XBlock {
     size_t size;
     struct XBlock* next;
@@ -20,44 +21,48 @@ static inline size_t align(size_t size) {
 }
 
 static void init_allocator() {
-    free_list = (XBlock*)memory_pool;
+    free_list = (XBlock*) memory_pool;
     free_list->size = MEMORY_SIZE - sizeof(XBlock);
     free_list->next = NULL;
 }
 
+// Allocate memory from the pool
 void* xalloc(size_t size) {
     init_allocator();
-
+    
     size = align(size);
     XBlock* prev = NULL;
-    XBlock* current = free_list;
+    XBlock* curr = free_list;
 
-    while (current) {
-        if (current->size >= size) {
-            if (current->size > size + sizeof(XBlock)) {
-                XBlock* new_block = (XBlock*)((uint8_t*)current + sizeof(XBlock) + size);
-                new_block->size = current->size - size - sizeof(XBlock);
-                new_block->next = current->next;
-                current->size = size;
-                current->next = new_block;
+    while (curr) {
+        if (curr->size >= size) {
+            // If the block is large enough, split it
+            if (curr->size > size + sizeof(XBlock)) {
+                XBlock* new_block = (XBlock*) ((uint8_t*) curr + sizeof(XBlock) + size);
+                new_block->size = curr->size - size - sizeof(XBlock);
+                new_block->next = curr->next;
+                curr->size = size;
+                curr->next = new_block;
             }
 
+            // Remove the block from the free list
             if (prev) {
-                prev->next = current->next;
+                prev->next = curr->next;
             } else {
-                free_list = current->next;
+                free_list = curr->next;
             }
 
-            return (void*)(current + 1);
+            return (void*) (curr + 1); // Return pointer after the Block header
         }
 
-        prev = current;
-        current = current->next;
+        prev = curr;
+        curr = curr->next;
     }
 
     return NULL; // Not enough memory available
 }
 
+// Free memory back to the pool
 void xfree(void* ptr) {
     XBlock* block = (XBlock*) ptr - 1; // Get the Block header
 
