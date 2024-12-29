@@ -34,5 +34,5 @@ jobs:
     - name: Test
       run: |
         cd build
-        ls
+        ./xalloc
 
