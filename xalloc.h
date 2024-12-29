@@ -61,6 +61,15 @@ void* xalloc(size_t size) {
     return NULL; // Not enough memory available
 }
 
+void xfree(void* ptr) {
+    if (!ptr) return; // Null pointer check
+
+    XBlock* block = (XBlock*) ptr - 1;
+
+    block->next = free_list;
+    free_list = block;
+}
+
 void* xrealloc(void* ptr, size_t new_size) {
     if (!ptr) return xalloc(new_size);
 
@@ -80,13 +89,5 @@ void* xrealloc(void* ptr, size_t new_size) {
     return new_ptr;
 }
 
-void xfree(void* ptr) {
-    if (!ptr) return; // Null pointer check
-
-    XBlock* block = (XBlock*) ptr - 1;
-
-    block->next = free_list;
-    free_list = block;
-}
 
 #endif
