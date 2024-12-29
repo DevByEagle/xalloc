@@ -4,7 +4,7 @@
 
 ## Example
 
-> !NOTE
+> [!NOTE]
 > 
 > Do Not use the other function in xalloc besides `xalloc`, `xrealloc` and `xfree`. 
 
