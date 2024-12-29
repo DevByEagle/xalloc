@@ -1,57 +1,69 @@
 #ifndef XALLOC_H
 #define XALLOC_H
 
-#include <stdlib.h>
+#include <stddef.h>
 #include <stdint.h>
-#include <string.h>
 
-#define MEMORY_POOL_SIZE 1024 // Example size of the memory pool (1 KB)
+#define ALIGNMENT 16
+#define MEMORY_SIZE 1024 * 1024 // 1 MB memory pool size
 
-static uint8_t memory_pool[MEMORY_POOL_SIZE];
-static uint8_t allocation_map[MEMORY_POOL_SIZE / sizeof(void *)];
+typedef struct XBlock {
+    size_t size;
+    struct XBlock* next;
+} XBlock;
 
-void *xalloc(size_t size)
-{
-    size_t blocks_needed = (size + sizeof(void *) - 1) / sizeof(void *); // Calculate how many blocks are needed
+static uint8_t memory_pool[MEMORY_SIZE];
+static XBlock* free_list = NULL;
 
-    for (size_t i = 0; i < MEMORY_POOL_SIZE / sizeof(void *); i++)
-    {
-        // Check if there is enough contiguous free space
-        if (i + blocks_needed <= MEMORY_POOL_SIZE / sizeof(void *))
-        {
-            bool space_available = true;
+static inline size_t align(size_t size) {
+    return (size + ALIGNMENT - 1) & ~(ALIGNMENT - 1);
+}
 
-            for (size_t j = 0; j < blocks_needed; j++)
-            {
-                if (allocation_map[i + j] != 0)
-                {
-                    space_available = false;
-                    break;
-                }
+static void init_allocator() {
+    free_list = (XBlock*)memory_pool;
+    free_list->size = MEMORY_SIZE - sizeof(XBlock);
+    free_list->next = NULL;
+}
+
+void* xalloc(size_t size) {
+    init_allocator();
+
+    size = align(size);
+    XBlock* prev = NULL;
+    XBlock* current = free_list;
+
+    while (current) {
+        if (current->size >= size) {
+            if (current->size > size + sizeof(XBlock)) {
+                XBlock* new_block = (XBlock*)((uint8_t*)current + sizeof(XBlock) + size);
+                new_block->size = current->size - size - sizeof(XBlock);
+                new_block->next = current->next;
+                current->size = size;
+                current->next = new_block;
             }
 
-            if (space_available)
-            {
-                // Mark the blocks as allocated
-                for (size_t j = 0; j < blocks_needed; ++j)
-                {
-                    allocation_map[i + j] = 1;
-                }
-
-                return (void*)&memory_pool[i * sizeof(void*)];
+            if (prev) {
+                prev->next = current->next;
+            } else {
+                free_list = current->next;
             }
+
+            return (void*)(current + 1);
         }
+
+        prev = current;
+        current = current->next;
     }
 
-    // No suitable space found
-    return NULL;
+    return NULL; // Not enough memory available
 }
 
 void xfree(void* ptr) {
-    size_t block_index = ((unsigned char*)ptr - memory_pool) / sizeof(void*);
+    XBlock* block = (XBlock*) ptr - 1; // Get the Block header
 
-    // Free the allocated blocks by marking them as free
-    allocation_map[block_index] = 0;
+    // Add the block back to the free list
+    block->next = free_list;
+    free_list = block;
 }
 
-#endif // XALLOC_H
+#endif
