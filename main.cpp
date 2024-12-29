@@ -2,14 +2,13 @@
 #include "xalloc.h"
 
 int main() {
-    void* ptr1 = xalloc(26);
-    void* ptr2 = xalloc(sizeof(int));
+    int* a = (int*) xalloc(sizeof(int));
+    if (a) {
+        *a = 42; // Assign a value
+        std::cout << "Allocated memory for 'a', value: " << *a << std::endl;
+    } else {
+        std::cerr << "Memory allocation failed for 'a'" << std::endl; 
+        printf("Memory allocation failed for 'a'\n");
+    }
 
-    std::cout << ptr1 << std::endl;
-    std::cout << ptr2 << std::endl;
-
-    xfree(ptr1);
-    xfree(ptr2);
-
-    return 0;
 }

@@ -1,5 +1,5 @@
-#ifndef XALLOC_H
-#define XALLOC_H
+#ifndef XALLOC_H_
+#define XALLOC_H_
 
 #include <stddef.h>
 #include <stdint.h>
@@ -16,14 +16,18 @@ typedef struct XBlock {
 static uint8_t memory_pool[MEMORY_SIZE];
 static XBlock* free_list = NULL;
 
+// Align the memory size to the nearest multiple of ALIGNMENT
 static inline size_t align(size_t size) {
     return (size + ALIGNMENT - 1) & ~(ALIGNMENT - 1);
 }
 
+// Initialize the memory pool and free list
 static void init_allocator() {
-    free_list = (XBlock*) memory_pool;
-    free_list->size = MEMORY_SIZE - sizeof(XBlock);
-    free_list->next = NULL;
+    if (free_list == NULL) {
+        free_list = (XBlock*) memory_pool;
+        free_list->size = MEMORY_SIZE - sizeof(XBlock);
+        free_list->next = NULL;
+    }
 }
 
 // Allocate memory from the pool
@@ -52,7 +56,8 @@ void* xalloc(size_t size) {
                 free_list = curr->next;
             }
 
-            return (void*) (curr + 1); // Return pointer after the Block header
+            // Return pointer to the memory after the block header
+            return (void*) (curr + 1);
         }
 
         prev = curr;
@@ -64,6 +69,8 @@ void* xalloc(size_t size) {
 
 // Free memory back to the pool
 void xfree(void* ptr) {
+    if (!ptr) return; // Null pointer check
+
     XBlock* block = (XBlock*) ptr - 1; // Get the Block header
 
     // Add the block back to the free list
