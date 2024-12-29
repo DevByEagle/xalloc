@@ -3,11 +3,11 @@
 
 #include <stddef.h>
 #include <stdint.h>
+#include <string.h>
 
 #define ALIGNMENT 16
 #define MEMORY_SIZE 1024 * 1024 // 1 MB memory pool size
 
-// Block structure for free list
 typedef struct XBlock {
     size_t size;
     struct XBlock* next;
@@ -16,12 +16,10 @@ typedef struct XBlock {
 static uint8_t memory_pool[MEMORY_SIZE];
 static XBlock* free_list = NULL;
 
-// Align the memory size to the nearest multiple of ALIGNMENT
 static inline size_t align(size_t size) {
     return (size + ALIGNMENT - 1) & ~(ALIGNMENT - 1);
 }
 
-// Initialize the memory pool and free list
 static void init_allocator() {
     if (free_list == NULL) {
         free_list = (XBlock*) memory_pool;
@@ -30,7 +28,6 @@ static void init_allocator() {
     }
 }
 
-// Allocate memory from the pool
 void* xalloc(size_t size) {
     init_allocator();
     
@@ -40,7 +37,6 @@ void* xalloc(size_t size) {
 
     while (curr) {
         if (curr->size >= size) {
-            // If the block is large enough, split it
             if (curr->size > size + sizeof(XBlock)) {
                 XBlock* new_block = (XBlock*) ((uint8_t*) curr + sizeof(XBlock) + size);
                 new_block->size = curr->size - size - sizeof(XBlock);
@@ -49,14 +45,12 @@ void* xalloc(size_t size) {
                 curr->next = new_block;
             }
 
-            // Remove the block from the free list
             if (prev) {
                 prev->next = curr->next;
             } else {
                 free_list = curr->next;
             }
 
-            // Return pointer to the memory after the block header
             return (void*) (curr + 1);
         }
 
@@ -67,13 +61,30 @@ void* xalloc(size_t size) {
     return NULL; // Not enough memory available
 }
 
-// Free memory back to the pool
+void* xrealloc(void* ptr, size_t new_size) {
+    if (!ptr) return xalloc(new_size);
+
+    XBlock* old_block = (XBlock*) ptr - 1;
+    
+    if (new_size <= old_block->size) {
+        return ptr;
+    }
+
+    void* new_ptr = xalloc(new_size);
+    if (!new_ptr) return NULL; // Allocation failed
+
+    memcpy(new_ptr, ptr, old_block->size);
+
+    xfree(ptr);
+
+    return new_ptr;
+}
+
 void xfree(void* ptr) {
     if (!ptr) return; // Null pointer check
 
-    XBlock* block = (XBlock*) ptr - 1; // Get the Block header
+    XBlock* block = (XBlock*) ptr - 1;
 
-    // Add the block back to the free list
     block->next = free_list;
     free_list = block;
 }
