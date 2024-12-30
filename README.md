@@ -6,14 +6,12 @@
 
 ```c
 #include <stdio.h>
+
+#define MEMORY_SIZE 1024 * 1024 // You Need to define the memory size or else it while error for you to define it.
 #include "xalloc.h"
 
 int main() {
     int* arr = (int*)xalloc(10 * sizeof(int));
-    if (arr == NULL) {
-        fprintf(stderr, "Memory allocation failed.\n");
-        return 1;
-    }
 
     // Use the memory...
 

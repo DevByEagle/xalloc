@@ -1,12 +1,17 @@
 #ifndef XALLOC_H_
 #define XALLOC_H_
 
-#include <stddef.h>
-#include <stdint.h>
-#include <string.h>
+#ifndef MEMORY_SIZE
+#error "You must define MEMORY_SIZE, e.g. #define MEMORY_SIZE 1024"
+#endif
 
 #define ALIGNMENT 16
-#define MEMORY_SIZE 1024 * 1024 // 1 MB memory pool size
+
+#include <assert.h>
+#include <stddef.h>
+#include <stdint.h>
+#include <stdbool.h>
+#include <string.h>
 
 typedef struct XBlock {
     size_t size;
@@ -22,7 +27,7 @@ static inline size_t align(size_t size) {
 
 static void init_allocator() {
     if (free_list == NULL) {
-        free_list = (XBlock*) memory_pool;
+        free_list = (XBlock*)memory_pool;
         free_list->size = MEMORY_SIZE - sizeof(XBlock);
         free_list->next = NULL;
     }
@@ -58,7 +63,8 @@ void* xalloc(size_t size) {
         curr = curr->next;
     }
 
-    return NULL; // Not enough memory available
+    assert(0 && "Not enough memory available");
+    return NULL;
 }
 
 void xfree(void* ptr) {
@@ -68,25 +74,6 @@ void xfree(void* ptr) {
 
     block->next = free_list;
     free_list = block;
-}
-
-void* xrealloc(void* ptr, size_t new_size) {
-    if (!ptr) return xalloc(new_size);
-
-    XBlock* old_block = (XBlock*) ptr - 1;
-    
-    if (new_size <= old_block->size) {
-        return ptr;
-    }
-
-    void* new_ptr = xalloc(new_size);
-    if (!new_ptr) return NULL; // Allocation failed
-
-    memcpy(new_ptr, ptr, old_block->size);
-
-    xfree(ptr);
-
-    return new_ptr;
 }
 
 #endif
