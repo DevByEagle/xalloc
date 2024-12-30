@@ -68,7 +68,7 @@ void* xalloc(size_t size) {
 }
 
 void xfree(void* ptr) {
-    if (!ptr) return; // Null pointer check
+    if (!ptr) return;
 
     XBlock* block = (XBlock*) ptr - 1;
 
