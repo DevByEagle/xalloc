@@ -7,7 +7,7 @@
 ```c
 #include <stdio.h>
 
-#define MEMORY_SIZE 1024 * 1024 // You Need to define the memory size or else it while error for you to define it.
+#define MEMORY_SIZE 1024 * 1024 // You Need to define the memory size or else it while error.
 #include "xalloc.h"
 
 int main() {
