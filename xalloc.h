@@ -35,11 +35,6 @@ static void init_allocator() {
 
 void* xalloc(size_t size) {
     init_allocator();
-
-    if (size > MEMORY_SIZE - sizeof(XBlock)) {
-        assert(false && "Requested memory size exceeds available memory");
-        return NULL;
-    }
     
     size = align(size);
     XBlock* prev = NULL;
