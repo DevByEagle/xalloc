@@ -62,7 +62,7 @@ void* xalloc(size_t size) {
         prev = curr;
         curr = curr->next;
     }
-    
+
     return NULL;
 }
 
