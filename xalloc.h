@@ -5,11 +5,13 @@
 #error "You must define MEMORY_SIZE, e.g. #define MEMORY_SIZE 1024"
 #endif
 
-#define ALIGNMENT 16
-
 #include <stddef.h>
 #include <stdint.h>
-#include <string.h>
+#include <stddef.h>
+//#include <assert.h>
+//#include <stdbool.h>
+
+#define ALIGNMENT 16
 
 struct XBlock {
     size_t size;
