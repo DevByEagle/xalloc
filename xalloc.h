@@ -7,10 +7,8 @@
 
 #define ALIGNMENT 16
 
-#include <assert.h>
 #include <stddef.h>
 #include <stdint.h>
-#include <stdbool.h>
 #include <string.h>
 
 struct XBlock {
@@ -70,9 +68,7 @@ void xfree(void* ptr) {
     if (!ptr) return;
 
     struct XBlock* block = (struct XBlock*) ptr - 1;
-
-    assert((uint8_t*)block >= memory_pool && (uint8_t*)block < memory_pool + MEMORY_SIZE); // Ensure the block is within the pool
-    
+ 
     block->next = free_list;
     free_list = block;
 }
