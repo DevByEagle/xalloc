@@ -1,10 +1,3 @@
-/**
- * @file xalloc.h
- * @brief 
- * 
- * 
- */
-
 #ifndef XALLOC_H_
 #define XALLOC_H_
 
