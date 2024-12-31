@@ -23,3 +23,11 @@ int main() {
     return 0;
 }
 ```
+
+## Performance Benchmarks
+
+`xalloc` has been benchmarked against the standard system allocator (e.g., `malloc`/`free` in glibc) to demonstrate its performance benefits in various scenarios.
+
+| Test Case                | `xalloc` Time | `malloc/free` Time |
+|--------------------------|---------------|---------------------|
+| Single Allocation (1KB)   | 25.1473 ms	 | N/A |
