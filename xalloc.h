@@ -1,78 +1,96 @@
+/**
+ * @file xalloc.h
+ * @brief 
+ * 
+ * 
+ */
+
 #ifndef XALLOC_H_
 #define XALLOC_H_
 
-#ifndef MEMORY_SIZE
-#error "You must define MEMORY_SIZE, e.g. #define MEMORY_SIZE 1024"
-#endif
-
 #include <stddef.h>
 #include <stdint.h>
-#include <stddef.h>
-//#include <assert.h>
-//#include <stdbool.h>
+#include <string.h>
+#include <assert.h>
 
-#define ALIGNMENT 16
+#if defined(_WIN32) || defined(_WIN64)
+    #if defined(_MSC_VER)
+        #include <Windows.h>
+    #elif defined(__MINGW32__) || defined(__MINGW64__)
+        #include <windows.h>
+    #endif
+#else
+    #include <unistd.h>
+#endif
 
 struct XBlock {
     size_t size;
     struct XBlock* next;
 };
 
-static uint8_t memory_pool[MEMORY_SIZE];
 static struct XBlock* free_list = NULL;
 
-static inline size_t align(size_t size) {
-    return (size + ALIGNMENT - 1) & ~(ALIGNMENT - 1);
-}
-
-static void init_allocator() {
-    if (free_list == NULL) {
-        free_list = (struct XBlock*)memory_pool;
-        free_list->size = MEMORY_SIZE - sizeof(struct XBlock);
-        free_list->next = NULL;
-    }
-}
-
 void* xalloc(size_t size) {
-    init_allocator();
+    assert(size > 0);
     
-    size = align(size);
-    struct XBlock* prev = NULL;
-    struct XBlock* curr = free_list;
+    if (free_list == NULL) {
+        #if defined(_WIN32) || defined(_WIN64)
+        void* block = VirtualAlloc(NULL, size + sizeof(struct XBlock), MEM_COMMIT | MEM_RESERVE, PAGE_READWRITE);
+        #else
+        void* block = sbrk(size + sizeof(struct XBlock));
+        #endif
 
-    while (curr) {
-        if (curr->size >= size) {
-            if (curr->size > size + sizeof(struct XBlock)) {
-                struct XBlock* new_block = (struct XBlock*) ((uint8_t*) curr + sizeof(struct XBlock) + size);
-                new_block->size = curr->size - size - sizeof(struct XBlock);
-                new_block->next = curr->next;
-                curr->size = size;
-                curr->next = new_block;
-            }
+        assert(block != NULL);  // Ensure memory allocation succeeded
 
-            if (prev) {
-                prev->next = curr->next;
-            } else {
-                free_list = curr->next;
-            }
+        struct XBlock* memoryBlock = (struct XBlock*) block;
+        memoryBlock->size = size;
+        memoryBlock->next = NULL;
 
-            return (void*) (curr + 1);
-        }
-
-        prev = curr;
-        curr = curr->next;
+        return (void*)(memoryBlock + 1);
     }
 
-    return NULL;
+    struct XBlock* current = free_list;
+    free_list = free_list->next;
+    current->size = size;
+
+    return (void*)(current + 1);
 }
 
 void xfree(void* ptr) {
-    if (!ptr) return;
+    assert(ptr != NULL);  // Ensure that the pointer is not NULL
 
     struct XBlock* block = (struct XBlock*) ptr - 1;
- 
-    block->next = free_list;
-    free_list = block;
+
+    // Ensure the block size is valid
+    assert(block->size > 0);
+
+    #if defined(_WIN32) || defined(_WIN64)
+    VirtualFree(block, 0, MEM_RELEASE);
+    #else
+    block->next = freeList;
+    freeList = block;
+    #endif
+}
+
+void* xrealloc(void* ptr, size_t new_size) {
+    assert(new_size > 0);  // Ensure that size is greater than 0
+
+    if (ptr == NULL) {
+        return xalloc(new_size);
+    }
+
+    struct XBlock* block = (struct XBlock*) ptr - 1;
+    assert(block->size > 0);  // Ensure the block size is valid
+
+    if (block->size >= new_size) return ptr; // No need to resize
+
+    void* newPtr = xalloc(new_size);
+    assert(newPtr != NULL);  // Ensure new memory allocation succeeded
+
+    memcpy(newPtr, ptr, block->size);
+    xfree(ptr);
+
+    return newPtr;
 }
 
 #endif

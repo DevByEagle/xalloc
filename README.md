@@ -6,23 +6,16 @@
 
 Here’s how you can integrate `xalloc` into your project:
 
-
 ```c
-#define MEMORY_SIZE 1024 * 512
 #include "xalloc.h"
-#include <stdio.h>
 
 int main() {
-    int* arr = (int*)xalloc(sizeof(int) * 10);
-    if (arr == NULL) {
-        fprintf(stderr, "Allocation failed\n");
-        return 1;
-    }
+    void* ptr = xalloc(24);
+    assert(ptr != NULL && "Failed to allocate memory.");
 
     // Use the memory...
 
-    xfree(arr);
-    
+    xfree(ptr);
     return 0;
 }
 ```
