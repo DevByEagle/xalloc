@@ -4,19 +4,9 @@
 
 ## Features
 
-- **Customizable:** Easily configurable to suit different use cases and system requirements.
+- **Customizable:** Offers compile-time settings for fine-tuning performance based on the application needs.
+
 - **Cross-Platform:** Works on any platform with a C compiler, allowing seamless integration into projects across various operating systems.
-
-## Advanced Configuration
-
-`xalloc` can be configured at compile time to optimize memory allocation strategies for specific use cases. To enable advanced configurations, define the following macros before including `xalloc.h`:
-
-```c
-#define MEMORY_SIZE 1024 * 1024
-#include "xalloc.h"
-```
-
-- `MEMORY_SIZE`: Sets a custom memory size for the allocator (in bytes).
 
 ## Usage
 
