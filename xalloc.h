@@ -62,8 +62,7 @@ void* xalloc(size_t size) {
         prev = curr;
         curr = curr->next;
     }
-
-    assert(false && "Not enough memory available");
+    
     return NULL;
 }
 
@@ -72,6 +71,8 @@ void xfree(void* ptr) {
 
     struct XBlock* block = (struct XBlock*) ptr - 1;
 
+    assert((uint8_t*)block >= memory_pool && (uint8_t*)block < memory_pool + MEMORY_SIZE); // Ensure the block is within the pool
+    
     block->next = free_list;
     free_list = block;
 }
