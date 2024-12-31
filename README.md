@@ -30,4 +30,6 @@ int main() {
 
 | Test Case                | `xalloc` Time | `malloc/free` Time |
 |--------------------------|---------------|---------------------|
-| Single Allocation (1KB)   | 25.1473 ms	 | N/A |
+| Single Allocation (1KB)  | 25.1473 ms    | 143.782 ms |
+
+_Note: Benchmarks are dependent on the environment and may vary based on system configuration._
