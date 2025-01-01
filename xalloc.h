@@ -9,7 +9,7 @@
 #if defined(_WIN32) || defined(_WIN64)
     #if defined(_MSC_VER)
         #include <Windows.h>
-    #elif defined(__MINGW32__) || defined(__MINGW64__)
+    #else
         #include <windows.h>
     #endif
 #else
@@ -60,8 +60,8 @@ void xfree(void* ptr) {
     #if defined(_WIN32) || defined(_WIN64)
     VirtualFree(block, 0, MEM_RELEASE);
     #else
-    block->next = freeList;
-    freeList = block;
+    block->next = free_list;
+    free_list = block;
     #endif
 }
 
