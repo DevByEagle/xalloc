@@ -10,12 +10,12 @@ Here’s how you can integrate `xalloc` into your project:
 #include "xalloc.h"
 
 int main() {
-    void* ptr = xalloc(24);
-    assert(ptr != NULL && "Failed to allocate memory.");
+    int* arr = (int*)xalloc(10 * sizeof(int));
+    assert(arr != NULL);
 
     // Use the memory...
 
-    xfree(ptr);
+    xfree(arr);
     return 0;
 }
 ```
