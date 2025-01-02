@@ -1,5 +1,5 @@
-#ifndef XALLOC_H_
-#define XALLOC_H_
+#ifndef XALLOC_H
+#define XALLOC_H
 
 #include <stddef.h>
 #include <stdint.h>
@@ -8,7 +8,7 @@
 
 #if defined(_WIN32) || defined(_WIN64)
     #if defined(_MSC_VER)
-        #include <Windows.h>
+         #include <Windows.h>
     #else
         #include <windows.h>
     #endif
@@ -21,12 +21,10 @@ struct XBlock {
     struct XBlock* next;
 };
 
-static struct XBlock* free_list = NULL;
+static struct XBlock* freelist = NULL;
 
 void* xalloc(size_t size) {
-    assert(size > 0);
-    
-    if (free_list == NULL) {
+    if (freelist == NULL) {
         #if defined(_WIN32) || defined(_WIN64)
         void* block = VirtualAlloc(NULL, size + sizeof(struct XBlock), MEM_COMMIT | MEM_RESERVE, PAGE_READWRITE);
         #else
@@ -42,20 +40,15 @@ void* xalloc(size_t size) {
         return (void*)(memoryBlock + 1);
     }
 
-    struct XBlock* current = free_list;
-    free_list = free_list->next;
+    struct XBlock* current = freelist;
+    freelist = freelist->next;
     current->size = size;
 
     return (void*)(current + 1);
 }
 
 void xfree(void* ptr) {
-    assert(ptr != NULL);  // Ensure that the pointer is not NULL
-
     struct XBlock* block = (struct XBlock*) ptr - 1;
-
-    // Ensure the block size is valid
-    assert(block->size > 0);
 
     #if defined(_WIN32) || defined(_WIN64)
     VirtualFree(block, 0, MEM_RELEASE);
@@ -65,19 +58,14 @@ void xfree(void* ptr) {
     #endif
 }
 
-void* xrealloc(void* ptr, size_t new_size) {
-    assert(new_size > 0);  // Ensure that size is greater than 0
-
-    if (ptr == NULL) {
-        return xalloc(new_size);
-    }
+void* xrealloc(void* ptr, size_t newsize) {
+    if (ptr == NULL) return xalloc(newsize);
 
     struct XBlock* block = (struct XBlock*) ptr - 1;
-    assert(block->size > 0);  // Ensure the block size is valid
 
-    if (block->size >= new_size) return ptr; // No need to resize
+    if (block->size >= newsize) return ptr; // No need to resize
 
-    void* newPtr = xalloc(new_size);
+    void* newPtr = xalloc(newsize);
     assert(newPtr != NULL);  // Ensure new memory allocation succeeded
 
     memcpy(newPtr, ptr, block->size);
@@ -86,4 +74,4 @@ void* xrealloc(void* ptr, size_t new_size) {
     return newPtr;
 }
 
-#endif
+#endif // XALLOC_H
