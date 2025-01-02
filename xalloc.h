@@ -1,11 +1,3 @@
-/**
- * @file xalloc.h
- * @author DevByEagle
- * @brief 
- * @date 2024-12-29
- * @link https://github.com/DevByEagle/xalloc
- */
-
 #ifndef XALLOC_H
 #define XALLOC_H
 
