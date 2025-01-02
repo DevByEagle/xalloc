@@ -1,3 +1,11 @@
+/**
+ * @file xalloc.h
+ * @author DevByEagle
+ * @brief 
+ * @date 2024-12-29
+ * @link https://github.com/DevByEagle/xalloc
+ */
+
 #ifndef XALLOC_H
 #define XALLOC_H
 
@@ -53,8 +61,8 @@ void xfree(void* ptr) {
     #if defined(_WIN32) || defined(_WIN64)
     VirtualFree(block, 0, MEM_RELEASE);
     #else
-    block->next = free_list;
-    free_list = block;
+    block->next = freelist;
+    freelist = block;
     #endif
 }
 
