@@ -2,20 +2,25 @@
 
 `xalloc` is a custom memory allocator designed for high performance, low overhead, and flexibility in memory management for C and C++ projects. It is optimized to handle allocation and deallocation of memory efficiently, minimizing fragmentation, and improving runtime performance.
 
-## Quick Start
+## API Reference
 
-Here’s how you can integrate `xalloc` into your project:
+### Core Functions
 
 ```c
-#include "xalloc.h"
+// Allocates a block of memory of the given size in bytes.
+void* xalloc(size_t size);
 
-int main() {
-    int* arr = (int*)xalloc(10 * sizeof(int));
-    assert(arr != NULL);
+// Frees the memory block pointed to by `ptr`.
+void xfree(void* ptr);
 
-    // Use the memory...
-
-    xfree(arr);
-    return 0;
-}
+// Resizes the memory block pointed to by `ptr` to the specified size.
+void* xrealloc(void* ptr, size_t newsize);
 ```
+
+<!-- ## Debugging Tools
+`xalloc`  includes built-in support for detecting memory-related issues like memory leaks and invalid memory access. Use the following functions for debugging:
+
+```c
+// Prints memory allocation statistics, including memory usage and leaks.
+void xalloc_print_stats(void);
+``` -->
