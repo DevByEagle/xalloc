@@ -16,11 +16,3 @@ void xfree(void* ptr);
 // Resizes the memory block pointed to by `ptr` to the specified size.
 void* xrealloc(void* ptr, size_t newsize);
 ```
-
-<!-- ## Debugging Tools
-`xalloc`  includes built-in support for detecting memory-related issues like memory leaks and invalid memory access. Use the following functions for debugging:
-
-```c
-// Prints memory allocation statistics, including memory usage and leaks.
-void xalloc_print_stats(void);
-``` -->
