@@ -3,6 +3,7 @@
 
 #include <stddef.h>
 #include <stdint.h>
+#include <stdbool.h>
 #include <string.h>
 #include <assert.h>
 
@@ -22,6 +23,7 @@ struct XBlock {
 };
 
 static struct XBlock* freelist = NULL;
+static bool xallocDebugEnable;
 
 void* xalloc(size_t size) {
     if (freelist == NULL) {
@@ -72,6 +74,39 @@ void* xrealloc(void* ptr, size_t newsize) {
     xfree(ptr);
 
     return newPtr;
+}
+
+// Debug Tools
+static void xalloc_print(const char* str) {
+    #if defined(_WIN32) || defined(_WIN64)
+    OutputDebugStringA(str);  // Windows output function
+    #else
+    write(1, str, strlen(str));  // Unix-like systems (Linux/macOS)
+    #endif
+}
+
+void xalloc_print_stats(void) {
+    if (!xallocDebugEnable) return;
+
+    size_t total_free_memory = 0;
+    size_t total_free_blocks = 0;
+    struct XBlock* current = freelist;
+
+    while (current != NULL) {
+        total_free_blocks++;
+        total_free_memory += current->size;
+        current = current->next;
+    }
+
+    // Printing the stats
+    char buffer[256];
+    int len = snprintf(buffer, sizeof(buffer),
+        "Memory Allocator Stats:\n  Total Free Memory: %zu bytes\n  Total Free Blocks: %zu\n",
+        total_free_memory, total_free_blocks);
+
+    if (len > 0) {
+        xalloc_print(buffer);
+    }
 }
 
 #endif // XALLOC_H

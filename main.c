@@ -1,31 +1,16 @@
 #include <stdio.h>
-#include <stdbool.h>
 #include "xalloc.h"
 
-int main(void) {
-    int* arr = (int*)xalloc(5 * sizeof(int));
-    if (arr == NULL) {
-        assert(false && "Failed to allocate memory");
-        return 1;
-    }
 
-    for (int i = 0; i < 5; i++) {
-        arr[i] = i + 1;
-        printf("arr[%d] = %d\n", i, arr[i]);
-    }
+int main() {
+    xallocDebugEnable = true;
 
-    arr = (int*)xrealloc(arr, 10 * sizeof(int));
-    if (arr == NULL) {
-        assert(false && "Failed to allocate memory");
-        return 1;
-    }
+    void* ptr = xalloc(128);
+    xalloc_print_stats();
 
-    for (int i = 5; i < 10; i++) {
-        arr[i] = i + 1;
-        printf("arr[%d] = %d\n", i, arr[i]);
-    }
+    xallocDebugEnable = false;
+    xalloc_print_stats();
 
-    xfree(arr);
-
+    xfree(ptr);
     return 0;
 }
