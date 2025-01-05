@@ -3,6 +3,7 @@
 
 #include <stddef.h>
 #include <stdint.h>
+#include <stdbool.h>
 #include <string.h>
 #include <assert.h>
 
@@ -72,6 +73,15 @@ void* xrealloc(void* ptr, size_t newsize) {
     xfree(ptr);
 
     return newPtr;
+}
+
+// Debug Tools
+static void xalloc_log_to_file(void) {
+    assert(false && "xalloc_log_to_file is not implemented");
+}
+
+void xalloc_print_stats(void) {
+    assert(false && "xalloc_print_stats is not implemented");
 }
 
 #endif // XALLOC_H
