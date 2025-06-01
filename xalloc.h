@@ -20,16 +20,16 @@ static struct XBlock *freelist = NULL; // Start of free list
 void *xalloc(size_t size)
 {
     size_t alignment = ((size + 7) & ~7);
-    size_t total_size = sizeof(XBlock) + alignment;
+    size_t total_size = sizeof(struct XBlock) + alignment;
 
     struct XBlock *current = freelist;
     while (current != NULL)
     {
         if (current->size >= total_size)
         {
-            if (current->size - total_size >= sizeof(XBlock))
+            if (current->size - total_size >= sizeof(struct XBlock))
             {
-                XBlock *new_free_block = (XBlock *)((char *)current + total_size);
+                struct XBlock *new_free_block = (struct XBlock *)((char *)current + total_size);
                 new_free_block->size = current->size - total_size;
                 new_free_block->next = current->next;
                 new_free_block->prev = current;
@@ -40,7 +40,7 @@ void *xalloc(size_t size)
                 current->size = total_size;
             }
             current->isFree = false;
-            return (void *)((char *)current + sizeof(XBlock));
+            return (void *)((char *)current + sizeof(struct XBlock));
         }
         current = current->next;
     }
@@ -52,13 +52,13 @@ void *xalloc(size_t size)
         return NULL;
     }
 
-    XBlock *block = (XBlock *)ptr;
+    struct XBlock *block = (struct XBlock *)ptr;
     block->size = total_size;
     block->next = NULL;
     block->prev = NULL;
     block->isFree = 0;
 
-    return (void *)((char *)block + sizeof(XBlock));
+    return (void *)((char *)block + sizeof(struct XBlock));
 }
 
 void xfree(void *ptr)
@@ -68,7 +68,7 @@ void xfree(void *ptr)
         return;
     }
 
-    XBlock *block = (XBlock *)((char *)ptr - sizeof(XBlock));
+    struct XBlock *block = (struct XBlock *)((char *)ptr - sizeof(struct XBlock));
     block->isFree = true;
 
     // Coalesce with previous block
