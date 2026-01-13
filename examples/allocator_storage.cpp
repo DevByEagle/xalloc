@@ -13,5 +13,6 @@ struct MyStruct
 
 int main()
 {
+    xalloc::memory_arena<xalloc::memory_block> arena;
     return 0;
 }
