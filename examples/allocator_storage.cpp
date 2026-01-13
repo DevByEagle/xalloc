@@ -2,6 +2,7 @@
 #include <new>
 
 #include <xalloc/xalloc.h>
+#include <xalloc/memory_arena.h>
 
 struct MyStruct
 {
@@ -12,11 +13,5 @@ struct MyStruct
 
 int main()
 {
-    xalloc::list<int, void> list;
-    list.push_back(3);
-
-    for (auto e : list)
-        std::cout << e << ' ';
-    std::cout << '\n';
     return 0;
 }

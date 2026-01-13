@@ -1,11 +1,8 @@
-#ifndef XALLOC__DEFAULT_ALLOCATOR_H_
-#define XALLOC__DEFAULT_ALLOCATOR_H_
-
-#include "heap_allocator.h"
+#ifndef XALLOC_DEFAULT_ALLOCATOR_H_
+#define XALLOC_DEFAULT_ALLOCATOR_H_
 
 namespace xalloc
 {
-    using default_allocator = heap_allocator;
 }
 
 #endif
