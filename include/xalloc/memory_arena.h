@@ -13,48 +13,13 @@ namespace xalloc
         void* memory;
         std::size_t size;
 
-        memory_block() noexcept : memory_block(nullptr, std::size_t(0)) {}
-        
-        memory_block(void* mem, std::size_t s) noexcept : memory(mem), size(s) {}
+        memory_block() noexcept = default;
 
-        bool contains(const void* address) const noexcept
-        {
-            return false;
-        } 
+        memory_block(void* mem, std::size_t s) noexcept : memory(mem), size(s) {}
     };
 
     namespace internal
     {
-        class memory_block_stack
-        {
-        public:
-            memory_block_stack() noexcept : head_(nullptr) {}
-            
-            memory_block_stack(memory_block_stack&& other) noexcept : head_(other.head_)
-            {
-                other.head_ = nullptr;
-            }
-
-            ~memory_block_stack() noexcept {}
-
-            bool empty() const noexcept
-            {
-                return head_ == nullptr;
-            } 
-
-            bool owns(const void* ptr) const noexcept;
-            std::size_t size() const noexcept;
-        private:
-            struct node
-            {
-                node*       prev;
-                std::size_t usable_size;
-
-                node(node* p, std::size_t size) noexcept : prev(p), usable_size(size) {}
-            };
-
-            node* head_;
-        };
     }
 
     template <class BlockAllocator>
@@ -62,15 +27,10 @@ namespace xalloc
     {
     public:
         using allocator_type = BlockAllocator;
+        
+        memory_arena() noexcept = default;
 
         ~memory_arena() noexcept
-        {
-            shrink_to_fit();
-            while (!used_.empty())
-                return;
-        }
-
-        void shrink_to_fit() noexcept
         {
         }
 
@@ -78,8 +38,6 @@ namespace xalloc
         {
             return *this;
         }
-    private:
-        internal::memory_block_stack used_;
     };
 }
 
