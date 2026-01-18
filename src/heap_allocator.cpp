@@ -11,9 +11,10 @@ void* xalloc::MemAlloc(std::size_t size)
 
 void xalloc::MemFree(void* ptr)
 {
+    (void)ptr;
 }
-#else
-void* xalloc::MemAlloc(std::size_t size)
+#elif XALLOC_HOSTED_IMPLEMENTATION
+void* xalloc::MemAlloc(size_t size)
 {
     (void)size;
     return nullptr;
@@ -23,4 +24,5 @@ void xalloc::MemFree(void* ptr)
 {
     (void)ptr;
 }
+#else
 #endif

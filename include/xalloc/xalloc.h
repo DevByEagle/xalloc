@@ -2,27 +2,10 @@
 
 #include "config.h"
 
-#include <cstddef>
-
-struct memory_block;
+#include <stddef.h>
 
 namespace xalloc
 {
-    /** @brief
-     * 
-     *  @return
-     * 
-     *  @sa @ref xalloc::MemAlloc
-     * 
-     *  @since Added in version 1.0.
-     * 
-     *  @ingroup allocator
-     */
-    void* MemAlloc(std::size_t size);
-    void MemFree(void* ptr);
-    // std::size_t GetAllocatedSize();
+    void* MemAlloc(size_t size);
+    void  MemFree(void* ptr);
 }
-
-struct memory_block
-{
-};
