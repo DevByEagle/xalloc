@@ -2,13 +2,15 @@
 
 #define XALLOC_ENABLE_ADVANCED_FEATURES
 #include <xalloc/xalloc.h>
-#include <xalloc/memory_arena.h>
+#include <xalloc/std_allocator.h>
 
 int main()
 {
-    int* arr = (int*)xalloc::MemAlloc(4 * sizeof(int));
-    xalloc::allocator_traits<void> traits;
-    xalloc::memory_block block;
-    std::cout << block.contains(arr);
+    xalloc::std_allocator<int, int> allocator;
+    xalloc::std_allocator<void, void> b;
+    if (allocator == b)
+    {
+
+    }
     return 0;
 }
