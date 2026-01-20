@@ -2,6 +2,8 @@
 
 #include <type_traits>
 
+#include "xalloc.h"
+
 namespace xalloc
 {
     template <class Allocator>
@@ -9,6 +11,5 @@ namespace xalloc
     {
     public:
         using allocator_type = typename std::decay<void>::type;
-        using is_stateful = decltype(true);
     };
 }
