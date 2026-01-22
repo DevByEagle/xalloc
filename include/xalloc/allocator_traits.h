@@ -2,8 +2,6 @@
 
 #include <type_traits>
 
-#include "xalloc.h"
-
 namespace xalloc
 {
     template <class Allocator>
