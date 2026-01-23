@@ -5,6 +5,5 @@
 
 int main()
 {
-    xalloc::
     return 0;
 }
