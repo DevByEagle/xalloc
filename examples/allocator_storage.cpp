@@ -5,5 +5,6 @@
 
 int main()
 {
+    throw xalloc::out_of_memory();
     return 0;
 }

@@ -1,6 +1,5 @@
-set(header_path ${CMAKE_SOURCE_DIR}/include/xalloc)
-file(GLOB HEADERS "${header_path}/*.h")
-file(GLOB SOURCES "*.cpp")
+file(GLOB_RECURSE HEADERS CONFIGURE_DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/include/*.h)
+file(GLOB_RECURSE SOURCES CONFIGURE_DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/*cpp)
 
 add_library(xalloc ${SOURCES} ${HEADERS})
 
@@ -8,7 +7,9 @@ if (BUILD_SHARED_LIBS)
     set_property(TARGET xalloc PROPERTY POSITION_INDEPENDENT_CODE ON)
 endif()
 
-target_include_directories(xalloc PUBLIC $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/include/> # for client in subdirectory
-                                         $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}> # for generated files in build mode
-                                  PRIVATE ${header_path})  # for source files
-
+target_include_directories(xalloc
+    PUBLIC
+        $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/include/>
+    PRIVATE
+        ${CMAKE_SOURCE_DIR}/include/xalloc
+)
