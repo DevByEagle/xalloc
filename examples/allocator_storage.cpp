@@ -15,6 +15,6 @@ struct MyStruct
 
 int main()
 {
-    xalloc::allocator_provider<MyStruct> provider());
+    // xalloc::allocator_ptr<MyStruct> alloc = xalloc::make_allocator<MyStruct>()
     return 0;
 }
