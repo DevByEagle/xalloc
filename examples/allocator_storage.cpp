@@ -1,6 +1,4 @@
-#include <algorithm>
 #include <iostream>
-#include <iterator>
 
 #define XALLOC_ENABLE_ADVANCED_FEATURES
 #include <xalloc/xalloc.h>
