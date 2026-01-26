@@ -8,6 +8,6 @@ namespace xalloc
     class allocator_traits
     {
     public:
-        using allocator_type = typename std::decay<void>::type;
+        using allocator_type = typename std::decay<Allocator>::type;
     };
 }
