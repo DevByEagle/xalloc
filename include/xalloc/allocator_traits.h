@@ -4,6 +4,7 @@
 
 namespace xalloc
 {
+    /// @ingroup core
     template <class Allocator>
     class allocator_traits
     {

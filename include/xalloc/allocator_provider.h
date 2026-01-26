@@ -23,6 +23,14 @@ namespace xalloc
         allocator_provider& operator=(const allocator_provider&) = default;
     };
 
+    /** @brief
+     *
+     *  @tparam RawAllocator The underlying allocator type to store.
+     * 
+     *  @sa @ref allocator_provider
+     * 
+     *  @ingroup storage
+     */
     template <class RawAllocator>
     using allocator_ptr = allocator_provider<RawAllocator>;
 }
