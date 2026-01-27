@@ -23,6 +23,16 @@ namespace xalloc
         allocator_provider& operator=(const allocator_provider&) = default;
     };
 
+    template <class RawAllocator>
+    class reference_storage
+    {
+    public:
+        using allocator_type = typename allocator_traits<RawAllocator>::allocator_type;
+
+    protected:
+        ~reference_storage() noexcept = default;
+    };
+
     /** @brief
      *
      *  @tparam RawAllocator The underlying allocator type to store.
@@ -32,5 +42,5 @@ namespace xalloc
      *  @ingroup storage
      */
     template <class RawAllocator>
-    using allocator_ptr = allocator_provider<RawAllocator>;
+    using allocator_ptr = allocator_provider<reference_storage<RawAllocator>>;
 }
