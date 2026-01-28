@@ -25,12 +25,6 @@ namespace xalloc
     public:
         using allocator_type = BlockAllocator;
 
-        memory_arena() = default;
-
-        memory_arena(memory_arena&& other) noexcept : allocator_type(std::move(other))
-        {
-        }
-
         ~memory_arena() noexcept
         {
         }

@@ -2,7 +2,6 @@
 
 #define XALLOC_ENABLE_ADVANCED_FEATURES
 #include <xalloc/xalloc.h>
-// #include <xalloc/allocator_provider.h>
 
 struct MyStruct
 {
@@ -14,5 +13,6 @@ struct MyStruct
 
 int main()
 {
+    xalloc::memory_arena<MyStruct> arena;
     return 0;
 }
