@@ -81,4 +81,4 @@ jobs:
       - name: Run Tests
         shell: bash
         working-directory: build/
-        run: ./examples/xalloc_example_allocator_storage
+        run: ./examples/xalloc_example_allocator_storage.exe
