@@ -12,13 +12,9 @@ jobs:
     strategy:
       fail-fast: true
       matrix:
-        compiler: 
-          - "gcc:14"
-          - "clang:18"
         build_type: [Debug, Release]
-    container:
-      image: ghcr.io/devbyeagle/${{matrix.compiler}}
+        
     steps:
       - uses: actions/checkout@v4
       - name: Create Build Environment
-        run: 
+        run: cmake -E make_directory build
