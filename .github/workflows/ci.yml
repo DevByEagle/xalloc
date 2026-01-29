@@ -79,5 +79,5 @@ jobs:
         working-directory: build/
         run: cmake --build . --config ${{matrix.build_type}} -j 2
       - name: Run Tests
-        working-directory: build/examples/
+        working-directory: build/examples/Release/
         run: dir
