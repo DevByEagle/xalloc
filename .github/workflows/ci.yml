@@ -34,7 +34,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        xcode: ['15', '16']
+        xcode: ['16']
         build_type: [Debug, Release]
 
     steps:
