@@ -80,5 +80,5 @@ jobs:
         run: cmake --build . --config ${{matrix.build_type}} -j 2
       - name: Run Tests
         shell: powershell
-        working-directory: build/
-        run: ./examples/xalloc_example_allocator_storage.exe
+        working-directory: build/examples/
+        run: start xalloc_example_allocator_storage.exe
