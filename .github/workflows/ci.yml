@@ -78,13 +78,3 @@ jobs:
       - name: Build
         working-directory: build/
         run: cmake --build . --config ${{matrix.build_type}} -j 2
-      - name: Run Tests
-        working-directory: build/examples/
-        run: |
-          f "%BUILD_TYPE%"=="Debug" (
-            cd Debug
-          ) else (
-            cd Release
-          )
-        env:
-          BUILD_TYPE: ${{matrix.build_type}}
