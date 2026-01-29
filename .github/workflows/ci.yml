@@ -58,7 +58,7 @@ jobs:
         run: ./examples/xalloc_example_allocator_storage
 
   windows:
-    runs-on: windows-latest
+    runs-on: windows-2022
     strategy:
       fail-fast: false
       matrix:
@@ -79,6 +79,5 @@ jobs:
         working-directory: build/
         run: cmake --build . --config ${{matrix.build_type}} -j 2
       - name: Run Tests
-        shell: powershell
         working-directory: build/examples/
         run: start xalloc_example_allocator_storage.exe
