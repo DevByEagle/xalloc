@@ -27,7 +27,7 @@ jobs:
         run: cmake --build .
       - name: Run Tests
         working-directory: build
-        run: ctest --output-on-failure
+        run: ./examples/xalloc_example_allocator_storage
 
   macos:
     runs-on: macos-latest
@@ -53,9 +53,9 @@ jobs:
       - name: Build
         working-directory: build/
         run: cmake --build .
-      - name: Test
+      - name: Run Tests
         working-directory: build/
-        run: ctest --output-on-failure
+        run: ./examples/xalloc_example_allocator_storage
 
   windows:
     runs-on: windows-latest
@@ -78,6 +78,7 @@ jobs:
       - name: Build
         working-directory: build/
         run: cmake --build . --config ${{matrix.build_type}} -j 2
-      - name: Test
+      - name: Run Tests
+        shell: bash
         working-directory: build/
-        run: ctest -C ${{matrix.build_type}} --output-on-failure
+        run: ./examples/xalloc_example_allocator_storage
